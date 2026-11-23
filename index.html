@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TicketNest | Events & Travel</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #68748a;
+      --line: #e4e9f1;
+      --primary: #3659d9;
+      --primary-dark: #2947b7;
+      --surface: #fff;
+      --background: #f5f7fb;
+      --green: #18794e;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--background); color: var(--ink); font-family: "Segoe UI", Arial, sans-serif; line-height: 1.5; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--line); }
+    .topbar-inner, main { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar-inner { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 11px; font-size: 18px; font-weight: 750; letter-spacing: -0.03em; }
+    .brand-mark { display: grid; width: 39px; height: 39px; place-items: center; border-radius: 12px; background: #e9edff; color: var(--primary); font-size: 21px; }
+    .demo-label { padding: 6px 10px; border-radius: 999px; background: #f0f3f9; color: var(--muted); font-size: 12px; font-weight: 650; }
+    main { padding: 35px 0 52px; }
+    .intro { margin-bottom: 23px; }
+    .intro h1 { margin: 0 0 5px; font-size: clamp(27px, 4vw, 35px); letter-spacing: -0.045em; }
+    .intro p, .section-heading p { margin: 0; color: var(--muted); }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 23px; }
+    .stat-card, .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 4px 16px rgba(24, 39, 75, 0.035); }
+    .stat-card { padding: 15px 18px; }
+    .stat-label { color: var(--muted); font-size: 13px; font-weight: 600; }
+    .stat-number { margin-top: 3px; font-size: 25px; font-weight: 750; line-height: 1.2; }
+    .section-heading { margin-bottom: 16px; }
+    .section-heading h2 { margin: 0 0 4px; font-size: 19px; letter-spacing: -0.02em; }
+    .section-heading p { font-size: 13px; }
+    .category-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 22px; }
+    .category-card { overflow: hidden; border: 2px solid transparent; border-radius: 13px; background: var(--surface); box-shadow: 0 4px 16px rgba(24, 39, 75, 0.035); transition: border-color 150ms ease, transform 150ms ease; }
+    .category-card:hover { transform: translateY(-2px); }
+    .category-card.selected { border-color: var(--primary); }
+    .category-image-wrap { position: relative; height: 130px; overflow: hidden; background: linear-gradient(135deg, #dce5ff, #ecebff); }
+    .category-image-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .image-fallback { position: absolute; inset: 0; display: grid; place-items: center; font-size: 44px; }
+    .category-content { padding: 12px; }
+    .category-content h3 { margin: 0 0 2px; font-size: 15px; }
+    .category-content p { min-height: 36px; margin: 0 0 10px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .category-button { width: 100%; min-height: 34px; border: 1px solid #d5dce7; border-radius: 7px; background: #fff; color: var(--primary); font-size: 12px; font-weight: 700; }
+    .category-card.selected .category-button { border-color: var(--primary); background: var(--primary); color: #fff; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 20px; }
+    .panel { padding: 21px; }
+    .field { margin-bottom: 14px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 650; }
+    input, select { width: 100%; min-height: 42px; padding: 9px 11px; border: 1px solid #d5dce7; border-radius: 8px; background: #fff; color: var(--ink); outline: none; }
+    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(54, 89, 217, 0.12); }
+    .price-estimate { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 4px 0 15px; padding: 12px 13px; border-radius: 9px; background: #f2f5ff; color: #34446f; font-size: 13px; }
+    .price-estimate strong { color: var(--primary); font-size: 18px; }
+    .primary-button { width: 100%; min-height: 44px; border: 0; border-radius: 8px; background: var(--primary); color: #fff; font-weight: 700; }
+    .primary-button:hover { background: var(--primary-dark); }
+    .booking-list { display: grid; gap: 12px; }
+    .booking-card { padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: #fff; }
+    .booking-top, .booking-bottom { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .booking-title { margin: 0; font-size: 15px; font-weight: 700; overflow-wrap: anywhere; }
+    .booking-reference, .booking-details { color: var(--muted); font-size: 12px; }
+    .booking-reference { margin-top: 3px; }
+    .booking-details { margin: 11px 0; line-height: 1.7; }
+    .booking-bottom { align-items: center; border-top: 1px solid #eef1f6; padding-top: 10px; }
+    .booking-price { color: var(--green); font-weight: 750; }
+    .booking-type { display: inline-flex; padding: 4px 8px; border-radius: 999px; background: #edf2ff; color: #3453bd; font-size: 11px; font-weight: 700; }
+    .cancel-button { padding: 6px 8px; border: 0; border-radius: 6px; background: transparent; color: #b42332; font-size: 12px; font-weight: 650; }
+    .cancel-button:hover { background: #fff0f1; }
+    .empty-state { padding: 28px 14px; border: 1px dashed #cfd7e5; border-radius: 10px; color: var(--muted); text-align: center; font-size: 13px; }
+    .storage-note { margin: 13px 0 0; color: var(--muted); font-size: 11px; }
+    @media (max-width: 860px) { .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .layout { grid-template-columns: 1fr; } }
+    @media (max-width: 480px) {
+      .topbar-inner, main { width: min(100% - 28px, 1120px); }
+      .stats { gap: 8px; }
+      .stat-card { padding: 12px 10px; }
+      .stat-number { font-size: 22px; }
+      .panel { padding: 16px; }
+      .field-row { grid-template-columns: 1fr; gap: 0; }
+      .category-grid { gap: 9px; }
+      .category-image-wrap { height: 100px; }
+      .category-content { padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-inner"><div class="brand"><span class="brand-mark" aria-hidden="true">T</span><span>TicketNest</span></div><span class="demo-label">Student project demo</span></div></header>
+  <main>
+    <section class="intro" aria-labelledby="page-title"><h1 id="page-title">Events, matches & journeys</h1><p>Book a sports match, train ride, or flight. Choose your favorite ticket variety.</p></section>
+    <section class="stats" aria-label="Booking summary">
+      <article class="stat-card"><div class="stat-label">Total bookings</div><div class="stat-number" id="total-count">0</div></article>
+      <article class="stat-card"><div class="stat-label">Events & movies</div><div class="stat-number" id="event-count">0</div></article>
+      <article class="stat-card"><div class="stat-label">Travel tickets</div><div class="stat-number" id="travel-count">0</div></article>
+    </section>
+    <section aria-labelledby="categories-title">
+      <div class="section-heading"><h2 id="categories-title">What would you like to book?</h2><p>Select a category to see available choices.</p></div>
+      <div class="category-grid">
+        <article class="category-card selected" data-card-type="cricket"><div class="category-image-wrap"><img src="https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&amp;fit=crop&amp;w=700&amp;q=80" alt="Cricket match at a stadium"><span class="image-fallback" aria-hidden="true" hidden>🏏</span></div><div class="category-content"><h3>Cricket</h3><p>League games, T20 nights, and cup finals.</p><button class="category-button" type="button" data-type="cricket" aria-pressed="true">Choose cricket</button></div></article>
+        <article class="category-card" data-card-type="football"><div class="category-image-wrap"><img src="https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&amp;fit=crop&amp;w=700&amp;q=80" alt="Football match in a stadium"><span class="image-fallback" aria-hidden="true" hidden>⚽</span></div><div class="category-content"><h3>Football</h3><p>Local league, university cup, and friendly matches.</p><button class="category-button" type="button" data-type="football" aria-pressed="false">Choose football</button></div></article>
+        <article class="category-card" data-card-type="train"><div class="category-image-wrap"><img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&amp;fit=crop&amp;w=700&amp;q=80" alt="Passenger train on a railway"><span class="image-fallback" aria-hidden="true" hidden>🚆</span></div><div class="category-content"><h3>Train</h3><p>Choose a route, train service, and travel class.</p><button class="category-button" type="button" data-type="train" aria-pressed="false">Choose train</button></div></article>
+        <article class="category-card" data-card-type="flight"><div class="category-image-wrap"><img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&amp;fit=crop&amp;w=700&amp;q=80" alt="Airplane flying above the clouds"><span class="image-fallback" aria-hidden="true" hidden>✈️</span></div><div class="category-content"><h3>Flight</h3><p>Compare sample routes and cabin classes.</p><button class="category-button" type="button" data-type="flight" aria-pressed="false">Choose flight</button></div></article>
+        <article class="category-card" data-card-type="movie"><div class="category-image-wrap"><img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&amp;fit=crop&amp;w=700&amp;q=80" alt="Cinema screen and movie theater seats"><span class="image-fallback" aria-hidden="true" hidden>🎬</span></div><div class="category-content"><h3>Movie</h3><p>Pick a film, cinema, and your favorite seat.</p><button class="category-button" type="button" data-type="movie" aria-pressed="false">Choose movie</button></div></article>
+        <article class="category-card" data-card-type="bus"><div class="category-image-wrap"><img src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&amp;fit=crop&amp;w=700&amp;q=80" alt="Passenger bus ready for a journey"><span class="image-fallback" aria-hidden="true" hidden>🚌</span></div><div class="category-content"><h3>Bus</h3><p>Choose your route, bus service, and seat type.</p><button class="category-button" type="button" data-type="bus" aria-pressed="false">Choose bus</button></div></article>
+      </div>
+    </section>
+    <div class="layout">
+      <section class="panel" aria-labelledby="form-title"><div class="section-heading"><h2 id="form-title">Complete your booking</h2><p>Choose a variety, date, and number of tickets.</p></div>
+        <form id="booking-form">
+          <div class="field"><label id="variety-label" for="variety">Cricket match</label><select id="variety" name="variety" required></select></div>
+          <div class="field"><label id="option-label" for="option">Ticket type</label><select id="option" name="option" required></select></div>
+          <div class="field-row"><div class="field"><label for="travel-date">Date</label><input id="travel-date" name="travelDate" type="date" required></div><div class="field"><label for="ticket-count">Number of tickets</label><input id="ticket-count" name="ticketCount" type="number" min="1" max="6" value="1" required></div></div>
+          <div class="field"><label for="customer-name">Your name</label><input id="customer-name" name="customerName" type="text" maxlength="60" placeholder="e.g. Alex Kumar" required></div>
+          <div class="field"><label for="customer-email">Email address</label><input id="customer-email" name="customerEmail" type="email" maxlength="100" placeholder="you@example.com" required></div>
+          <div class="price-estimate"><span>Estimated total</span><strong id="price-estimate">₹500</strong></div>
+          <button class="primary-button" type="submit">Confirm booking</button>
+        </form>
+      </section>
+      <section class="panel" aria-labelledby="bookings-title"><div class="section-heading"><h2 id="bookings-title">My bookings</h2><p>Your saved match and travel tickets appear here.</p></div><div id="booking-list" class="booking-list" aria-live="polite"></div><p class="storage-note">Student demo only: bookings stay in this browser. No real seats are reserved and no payment is taken.</p></section>
+    </div>
+  </main>
+  <script>
+    const STORAGE_KEY = "ticketnest-event-and-travel-bookings";
+    const catalog = {
+      cricket: { label: "Cricket match", optionLabel: "Seat variety", varieties: [{ name: "City Premier League: Tigers vs Warriors", place: "City Stadium", price: 500 }, { name: "T20 Night Match: Falcons vs Kings", place: "Riverside Ground", price: 650 }, { name: "University Cup Final: North vs South", place: "Campus Sports Ground", price: 300 }], options: [{ name: "General", extra: 0 }, { name: "Grandstand", extra: 500 }, { name: "VIP Pavilion", extra: 1500 }] },
+      football: { label: "Football match", optionLabel: "Seat variety", varieties: [{ name: "City League: United vs Rovers", place: "Metro Arena", price: 600 }, { name: "University Cup Final: Engineering vs Science", place: "Campus Sports Ground", price: 350 }, { name: "International Friendly: Lions vs Eagles", place: "National Stadium", price: 800 }], options: [{ name: "Standard", extra: 0 }, { name: "Premium Stand", extra: 700 }, { name: "VIP Lounge", extra: 1800 }] },
+      train: { label: "Train route", optionLabel: "Travel class", varieties: [{ name: "Campus Express: Central to North City", place: "Campus Express", price: 300 }, { name: "Coastal Superfast: Central to Seaside", place: "Coastal Superfast", price: 450 }, { name: "Night Sleeper: Central to Hilltown", place: "Night Sleeper", price: 350 }], options: [{ name: "Sleeper", extra: 0 }, { name: "3 AC", extra: 550 }, { name: "2 AC", extra: 1000 }] },
+      flight: { label: "Flight route", optionLabel: "Cabin class", varieties: [{ name: "Metro City to Capital", place: "SkyJet", price: 4500 }, { name: "Capital to Coastal City", place: "AirConnect", price: 5200 }, { name: "Metro City to Mountain City", place: "CloudAir", price: 3900 }], options: [{ name: "Economy", extra: 0 }, { name: "Premium Economy", extra: 3000 }, { name: "Business", extra: 9000 }] },
+      movie: { label: "Choose a movie", optionLabel: "Seat type", varieties: [{ name: "The Space Adventure", place: "Starline Cinema", price: 200 }, { name: "Mystery at Midnight", place: "Grand Screen Multiplex", price: 180 }, { name: "Campus Comedy Night", place: "Campus Cinema", price: 150 }], options: [{ name: "Standard", extra: 0 }, { name: "Premium", extra: 120 }, { name: "Recliner", extra: 250 }] },
+      bus: { label: "Bus route", optionLabel: "Seat type", varieties: [{ name: "City Centre to North Campus", place: "Campus Express", price: 250 }, { name: "Central Station to Seaside", place: "Coastal Travels", price: 450 }, { name: "Metro City to Hilltown", place: "Mountain Rider", price: 700 }], options: [{ name: "Regular", extra: 0 }, { name: "AC", extra: 250 }, { name: "Sleeper", extra: 500 }] }
+    };
+    const form = document.getElementById("booking-form");
+    const bookingList = document.getElementById("booking-list");
+    const varietySelect = document.getElementById("variety");
+    const optionSelect = document.getElementById("option");
+    const ticketCountInput = document.getElementById("ticket-count");
+    const dateInput = document.getElementById("travel-date");
+    let activeType = "cricket";
+    function loadBookings() { try { const savedBookings = localStorage.getItem(STORAGE_KEY); if (!savedBookings) return []; const parsedBookings = JSON.parse(savedBookings); return Array.isArray(parsedBookings) ? parsedBookings : []; } catch (error) { console.error("Could not read saved bookings:", error); return []; } }
+    let bookings = loadBookings();
+    function saveBookings(nextBookings) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(nextBookings)); return true; } catch (error) { console.error("Could not save bookings:", error); alert("Your browser could not save this booking. Check that browser storage is enabled."); return false; } }
+    function escapeHTML(value) { return String(value).replace(/[&<>'"]/g, function (character) { const entities = { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }; return entities[character]; }); }
+    function populateChoices() { const settings = catalog[activeType]; document.getElementById("variety-label").textContent = settings.label; document.getElementById("option-label").textContent = settings.optionLabel; varietySelect.innerHTML = settings.varieties.map(function (item, index) { return '<option value="' + index + '">' + escapeHTML(item.name) + '</option>'; }).join(""); optionSelect.innerHTML = settings.options.map(function (item, index) { return '<option value="' + index + '">' + escapeHTML(item.name) + '</option>'; }).join(""); document.querySelectorAll(".category-card").forEach(function (card) { const isSelected = card.dataset.cardType === activeType; card.classList.toggle("selected", isSelected); card.querySelector("button").setAttribute("aria-pressed", String(isSelected)); }); updateEstimate(); }
+    function getSelection() { const settings = catalog[activeType]; const variety = settings.varieties[Number(varietySelect.value)]; const option = settings.options[Number(optionSelect.value)]; return { variety: variety, option: option, price: variety.price + option.extra }; }
+    function updateEstimate() { const selection = getSelection(); const quantity = Number(ticketCountInput.value) || 0; document.getElementById("price-estimate").textContent = "₹" + (selection.price * quantity).toLocaleString("en-IN"); }
+    function renderBookings() { document.getElementById("total-count").textContent = bookings.length; document.getElementById("event-count").textContent = bookings.filter(function (booking) { return booking.type === "cricket" || booking.type === "football" || booking.type === "movie"; }).length; document.getElementById("travel-count").textContent = bookings.filter(function (booking) { return booking.type === "train" || booking.type === "flight" || booking.type === "bus"; }).length; if (bookings.length === 0) { bookingList.innerHTML = '<div class="empty-state">No bookings yet. Choose a category to get started.</div>'; return; } bookingList.innerHTML = bookings.map(function (booking) { return '<article class="booking-card"><div class="booking-top"><div><h3 class="booking-title">' + escapeHTML(booking.title) + '</h3><div class="booking-reference">Booking ' + escapeHTML(booking.id) + '</div></div><span class="booking-type">' + escapeHTML(booking.typeLabel) + '</span></div><p class="booking-details">' + escapeHTML(booking.place) + ' · ' + escapeHTML(booking.option) + '<br>' + escapeHTML(booking.date) + ' · ' + escapeHTML(booking.quantity) + ' ticket(s)<br>Booked by ' + escapeHTML(booking.customerName) + '</p><div class="booking-bottom"><span class="booking-price">₹' + Number(booking.total).toLocaleString("en-IN") + '</span><button class="cancel-button" type="button" data-cancel-id="' + escapeHTML(booking.id) + '">Cancel booking</button></div></article>'; }).join(""); }
+    document.querySelectorAll(".category-button").forEach(function (button) { button.addEventListener("click", function () { activeType = button.dataset.type; populateChoices(); }); });
+    document.querySelectorAll(".category-image-wrap img").forEach(function (image) { image.addEventListener("error", function () { image.hidden = true; image.nextElementSibling.hidden = false; }); });
+    varietySelect.addEventListener("change", updateEstimate); optionSelect.addEventListener("change", updateEstimate); ticketCountInput.addEventListener("input", updateEstimate);
+    form.addEventListener("submit", function (event) { event.preventDefault(); const formData = new FormData(form); const selection = getSelection(); const quantity = Number(formData.get("ticketCount")); const booking = { id: "TN-" + Date.now().toString().slice(-7), type: activeType, typeLabel: activeType.charAt(0).toUpperCase() + activeType.slice(1), title: selection.variety.name, place: selection.variety.place, option: selection.option.name, date: formData.get("travelDate"), quantity: quantity, customerName: formData.get("customerName").trim(), customerEmail: formData.get("customerEmail").trim(), total: selection.price * quantity }; const nextBookings = [booking].concat(bookings); if (!saveBookings(nextBookings)) return; bookings = nextBookings; form.reset(); dateInput.value = dateInput.min; ticketCountInput.value = "1"; populateChoices(); renderBookings(); alert("Ticket booked successfully! Your booking ID is " + booking.id + "."); });
+    bookingList.addEventListener("click", function (event) { const bookingId = event.target.dataset.cancelId; if (!bookingId) return; const nextBookings = bookings.filter(function (booking) { return booking.id !== bookingId; }); if (!saveBookings(nextBookings)) return; bookings = nextBookings; renderBookings(); });
+    const today = new Date(); dateInput.min = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, "0"), String(today.getDate()).padStart(2, "0")].join("-"); dateInput.value = dateInput.min; populateChoices(); renderBookings();
+  </script>
+</body>
+</html>
+
